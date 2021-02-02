@@ -1,0 +1,8 @@
+
+<% @order.line_items.each do |item| %>
+  <div class="container">
+    <h5> <%= item.product.name %> </h5>
+    <h6> <img class="product" src=<%= item.product.image %> height="70" style="float: left; margin-right: 7px" > <%= item.product.description %> </h6>
+    <h6>Quantity: <%= item.quantity %> | Total: <%= humanized_money_with_symbol  item.total_price_cents / 100.0 %> </h6>
+  </div>
+<% end %>
