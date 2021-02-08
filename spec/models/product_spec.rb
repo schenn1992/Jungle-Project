@@ -1,72 +1,46 @@
 require 'rails_helper'
-require 'product'
 
 RSpec.describe Product, type: :model do
   describe 'Validations' do
-    before(:each) do
-      @category = Category.new(name: "test-category")
-      @category.save
+
+    it 'validates :name, :price, :quantity, :category presence: true' do
+      @category = Category.create(name: "electronics")
+      @product = Product.create(name: "USB typewriter", price: 500, quantity: 12, category: @category)
+
+      expect(@product.name).not_to eq(nil)
+      expect(@product.price).not_to eq(nil)
+      expect(@product.quantity).not_to eq(nil)
+      expect(@product.category).not_to eq(nil)
+
+    end
+    
+    it 'validates :name, presence: true' do
+      @category = Category.create(name: "electronics")
+      @product = Product.create(price: 500, quantity: 12, category: @category)
+
+      expect(@product.errors.full_messages).to include("Name can't be blank")
     end
 
-    it "creates a product with a name, price, quantity, and category_id" do
-      @product = Product.new({
-        name: "test-product",
-        price: 50,
-        quantity: 50,
-        category_id: @category[:id],
-      })
-      @product.save
-      expect(@product).to be_present
+    it 'validates :price, presence: true' do
+      @category = Category.create(name: "electronics")
+      @product = Product.create(name: "USB typewriter", quantity: 12, category: @category)
+
+      expect(@product.errors.full_messages).to include("Price can't be blank")
     end
 
-    it "should not create a product without a name" do
-      @product = Product.new({
-        name: nil,
-        price: 50,
-        quantity: 50,
-        category_id: @category[:id],
-      })
-      @product.save
-      expect(@product.name).to_not be_present
-      expect(@product.errors.full_messages.include?("Name cannot be blank")).to be_truthy
+    it 'validates :quantity, presence: true' do
+      @category = Category.create(name: "electronics")
+      @product = Product.create(name: "USB typewriter", price: 500, category: @category)
+
+      expect(@product.errors.full_messages).to include("Quantity can't be blank")
     end
 
-    it "should not create a product without a price" do
-      @product = Product.new({
-        name: "test-product",
-        price: nil,
-        quantity: 50,
-        category_id: @category[:id],
-      })
-      @product.save
-
-      expect(@product.price).to_not be_present
-      expect(@product.errors.full_messages.include?("Price cents is not a number" || "Price is not a number" || "Price cannot be blank")).to be_truthy
-    end
-
-    it "should not create a product without a quantity" do
-      @product = Product.new({
-        name: "test-product",
-        price: 50,
-        quantity: nil,
-        category_id: @category[:id],
-      })
-      @product.save
-      expect(@product.quantity).to_not be_present
-      expect(@product.errors.full_messages.include?("Quantity cannot be blank")).to be_truthy
-    end
-
-    it "should not create a product without a category" do
-      @product = Product.new({
-        name: "test-product",
-        price: 50,
-        quantity: 50,
-        category_id: nil,
-      })
-      @product.save
-      expect(@product.category_id).to_not be_present
-      expect(@product.errors.full_messages.include?("Category cannot be blank")).to be_truthy
+    it 'validates :category, presence: true' do
+      @category = Category.create(name: "electronics")
+      @product = Product.create(name: "USB typewriter", price: 500, quantity: 12)
+      
+      expect(@product.errors.full_messages).to include("Category can't be blank")
     end
 
   end
-end 
+end
