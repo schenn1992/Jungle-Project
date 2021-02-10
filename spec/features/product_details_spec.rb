@@ -15,24 +15,19 @@ RSpec.feature "ProductDetails", type: :feature, js: true do
     end
   end
 
-  scenario "They click the details button of a product" do
+  scenario "User can navigate from the home page to the product detail page by clicking on a product" do
+
     visit root_path
+    save_screenshot 'home_page.png'
 
-    productDetailsButton = page.first("article.product").find_link("Details")
-    productDetailsButton.click
+    #find 'a' tag inside the first article's footer and click it
+    first('article.product').find('footer').find('a').click
 
-    expect(page).to have_link("Apparel")
-    save_screenshot("product-details-click.png")
-  end
+    path = page.current_path
+    visit path
+    save_screenshot 'after_details.png'
 
-  scenario "They click the add button of a product" do
-    visit root_path
-    # puts page.html
+    expect(page.current_path).to include('products')
 
-    productAddButton = page.first("article.product").find_button("Add")
-    productAddButton.click
-
-    expect(page).to have_content("Login")
-    save_screenshot("product-add-click.png")
   end
 end
